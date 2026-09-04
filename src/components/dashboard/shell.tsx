@@ -6,25 +6,20 @@ import { useState } from "react";
 import { Menu, X, LogOut, ExternalLink, Store, Code2 } from "lucide-react";
 import { cn, initials } from "@/lib/utils";
 import { logoutAction } from "@/app/login/actions";
-
-export interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
+import { ADMIN_NAV, DEVELOPER_NAV } from "./nav-config";
 
 interface Props {
   title: string;
   variant: "admin" | "developer";
-  nav: NavItem[];
   user: { name: string; role: string };
   businessName: string;
   children: React.ReactNode;
 }
 
-export function DashboardShell({ title, variant, nav, user, businessName, children }: Props) {
+export function DashboardShell({ title, variant, user, businessName, children }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const nav = variant === "developer" ? DEVELOPER_NAV : ADMIN_NAV;
 
   const accent = variant === "developer" ? "text-emerald-400" : "text-brand-light";
 

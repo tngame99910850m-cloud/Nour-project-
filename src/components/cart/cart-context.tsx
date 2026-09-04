@@ -18,7 +18,7 @@ interface CartContextValue {
   count: number;
   subtotal: number;
   isOpen: boolean;
-  addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
+  addItem: (item: Omit<CartItem, "quantity">, qty?: number, open?: boolean) => void;
   removeItem: (productId: string, variant?: string) => void;
   updateQty: (productId: string, qty: number, variant?: string) => void;
   clear: () => void;
@@ -55,7 +55,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const addItem = useCallback((item: Omit<CartItem, "quantity">, qty = 1) => {
+  const addItem = useCallback((item: Omit<CartItem, "quantity">, qty = 1, open = true) => {
     setItems((prev) => {
       const k = keyOf(item.productId, item.variant);
       const existing = prev.find((i) => keyOf(i.productId, i.variant) === k);
@@ -68,7 +68,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...item, quantity: Math.min(qty, Math.max(item.stock, 1)) }];
     });
-    setIsOpen(true);
+    if (open) setIsOpen(true);
   }, []);
 
   const removeItem = useCallback((productId: string, variant?: string) => {

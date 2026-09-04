@@ -44,7 +44,7 @@ interface Props {
 }
 
 export function ProductDetail({ product, business, siteUrl }: Props) {
-  const { addItem } = useCart();
+  const { addItem, closeCart } = useCart();
   const router = useRouter();
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
@@ -84,7 +84,8 @@ export function ProductDetail({ product, business, siteUrl }: Props) {
 
   const handleBuyNow = () => {
     if (soldOut) return;
-    addItem(buildCartItem(), qty);
+    addItem(buildCartItem(), qty, false);
+    closeCart();
     router.push("/checkout");
   };
 
