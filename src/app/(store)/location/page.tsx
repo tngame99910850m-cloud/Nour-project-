@@ -1,6 +1,7 @@
 import { MapPin, Navigation, Phone, Clock } from "lucide-react";
 import { getBusinessSettings } from "@/lib/settings";
 import { whatsappLink } from "@/lib/whatsapp";
+import { isEmbeddableMapUrl } from "@/lib/utils";
 
 export const metadata = { title: "Our Location" };
 
@@ -16,13 +17,26 @@ export default async function LocationPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="card overflow-hidden lg:col-span-2">
-          <iframe
-            title="Business location map"
-            src={business.mapsEmbedUrl}
-            className="h-[420px] w-full border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          {isEmbeddableMapUrl(business.mapsEmbedUrl) ? (
+            <iframe
+              title="Business location map"
+              src={business.mapsEmbedUrl}
+              className="h-[420px] w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          ) : (
+            <a
+              href={business.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-[420px] w-full flex-col items-center justify-center gap-3 bg-canvas text-center"
+            >
+              <MapPin className="h-10 w-10 text-brand" />
+              <span className="font-serif text-xl font-semibold">{business.address}</span>
+              <span className="btn-primary btn-md"><Navigation className="h-4 w-4" /> Open in Google Maps</span>
+            </a>
+          )}
         </div>
 
         <div className="space-y-4">

@@ -10,6 +10,7 @@ import {
   getProductsByGroup,
 } from "@/lib/catalog";
 import { prisma } from "@/lib/prisma";
+import { isEmbeddableMapUrl } from "@/lib/utils";
 import { SectionHeader, ProductGrid } from "@/components/store/section";
 import { whatsappLink, generalInquiryMessage } from "@/lib/whatsapp";
 
@@ -219,13 +220,26 @@ export default async function HomePage() {
         <section className="container-px">
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="card overflow-hidden">
-              <iframe
-                title="Business location"
-                src={business.mapsEmbedUrl}
-                className="h-72 w-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+              {isEmbeddableMapUrl(business.mapsEmbedUrl) ? (
+                <iframe
+                  title="Business location"
+                  src={business.mapsEmbedUrl}
+                  className="h-72 w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              ) : (
+                <a
+                  href={business.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-72 w-full flex-col items-center justify-center gap-3 bg-canvas text-center"
+                >
+                  <MapPin className="h-10 w-10 text-brand" />
+                  <span className="font-serif text-lg font-semibold">{business.address}</span>
+                  <span className="btn-primary btn-md">Open in Google Maps</span>
+                </a>
+              )}
             </div>
             <div className="card flex flex-col justify-center p-8">
               <MapPin className="h-8 w-8 text-brand" />

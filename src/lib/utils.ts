@@ -41,6 +41,12 @@ export function formatDateTime(date: Date | string): string {
   });
 }
 
+/** Only Google's iframe embed URLs (…/maps/embed…) can be safely iframed. */
+export function isEmbeddableMapUrl(url: string | undefined | null): boolean {
+  if (!url) return false;
+  return /\/maps\/embed/.test(url) || url.includes("google.com/maps/embed");
+}
+
 export function initials(name: string): string {
   return name
     .split(" ")
