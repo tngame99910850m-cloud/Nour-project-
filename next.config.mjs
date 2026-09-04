@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // ESLint is intentionally not a build/runtime dependency (removed to avoid the
+  // deprecated eslint@9 install warning). Linting is a dev-only concern.
+  eslint: { ignoreDuringBuilds: true },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
