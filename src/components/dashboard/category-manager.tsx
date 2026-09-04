@@ -84,7 +84,7 @@ function CategoryRow({ cat, isParent }: { cat: Cat; isParent?: boolean }) {
   );
 }
 
-function AddForm({ parents }: { parents: { id: string; name: string; group: string }[] }) {
+export function CategoryAddForm({ parents }: { parents: { id: string; name: string; group: string }[] }) {
   const [pending, start] = useTransition();
   const [isSub, setIsSub] = useState(false);
 
@@ -126,5 +126,3 @@ function AddForm({ parents }: { parents: { id: string; name: string; group: stri
     </form>
   );
 }
-
-CategoryManager.AddForm = AddForm;

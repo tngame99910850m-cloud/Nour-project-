@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card } from "@/components/dashboard/ui";
-import { CategoryManager } from "@/components/dashboard/category-manager";
+import { CategoryManager, CategoryAddForm } from "@/components/dashboard/category-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export default async function CategoriesPage() {
         </div>
         <Card>
           <h2 className="mb-3 font-semibold">Add category</h2>
-          <CategoryManager.AddForm parents={parents.map((p) => ({ id: p.id, name: p.name, group: p.group }))} />
+          <CategoryAddForm parents={parents.map((p) => ({ id: p.id, name: p.name, group: p.group }))} />
         </Card>
       </div>
     </div>
