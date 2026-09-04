@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@/lib/track-client";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader2, Tag } from "lucide-react";
@@ -36,6 +37,11 @@ export function CheckoutForm({
   const [discountApplied, setDiscountApplied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (items.length > 0) track("checkout_started");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const zone = useMemo(() => zones.find((z) => z.id === zoneId), [zones, zoneId]);
   const deliveryFee = useMemo(() => {

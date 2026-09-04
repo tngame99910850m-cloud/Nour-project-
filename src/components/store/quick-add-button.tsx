@@ -4,6 +4,7 @@ import { ShoppingBag, Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCart } from "@/components/cart/cart-context";
+import { track } from "@/lib/track-client";
 
 interface Props {
   product: {
@@ -25,6 +26,7 @@ export function QuickAddButton({ product }: Props) {
     if (soldOut) return;
     addItem(product, 1);
     setAdded(true);
+    track("add_to_cart", { productId: product.productId });
     toast.success(`${product.name} added to cart`);
     setTimeout(() => setAdded(false), 1500);
   };
