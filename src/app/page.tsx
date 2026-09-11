@@ -281,6 +281,10 @@ export default function PianoSimulator() {
   const totalWhites = whites.length;
 
   const progressPct = lesson ? Math.round((Math.min(step, lessonMidis.length) / lessonMidis.length) * 100) : 0;
+  const completed = !!lesson && step >= lessonMidis.length;
+  const accuracy = lesson ? Math.round((lessonMidis.length / (lessonMidis.length + mistakes)) * 100) : 0;
+  const stars = accuracy >= 95 ? 3 : accuracy >= 80 ? 2 : 1;
+  const nextLesson = lesson ? LESSONS[LESSONS.findIndex((l) => l.id === lesson.id) + 1] : undefined;
 
   /* ---------------------------------------------------------------- */
   return (
@@ -312,36 +316,53 @@ export default function PianoSimulator() {
             ))}
           </div>
 
-          {lesson ? (
-            <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-center rounded-xl bg-slate-900 px-4 py-2">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400">Next note</span>
-                  <span data-testid="next-note" className="text-3xl font-bold text-emerald-400">
-                    {step < lessonMidis.length ? midiName(lessonMidis[step]) : "✓"}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  {!isPlaying ? (
-                    <button onClick={startDemo} className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium hover:bg-indigo-400">▶ Listen</button>
-                  ) : (
-                    <button onClick={stopDemo} className="rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium hover:bg-amber-400">⏸ Pause</button>
-                  )}
-                  <button onClick={restart} className="rounded-lg bg-slate-700 px-3 py-2 text-sm font-medium hover:bg-slate-600">↺ Restart</button>
-                </div>
+          {lesson && !completed ? (
+            <>
+              {/* Big teacher instruction */}
+              <div className="mb-3 rounded-2xl bg-slate-900 py-5 text-center">
+                <p className="text-sm text-slate-400">{isPlaying ? "Listen and watch the keys…" : "Now play"}</p>
+                <p className="mt-1 text-5xl font-black tracking-wide text-emerald-400 sm:text-6xl">
+                  Play <span data-testid="next-note">{midiName(lessonMidis[step])}</span>
+                </p>
+                <p className="mt-1 text-sm text-slate-400">Press the glowing green key below 👇</p>
               </div>
-              <div>
-                <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
-                  <span>{lesson.hint}</span>
-                  <span data-testid="score">Score: <b className="text-slate-100">{score}</b> · Progress {progressPct}%</span>
-                </div>
-                <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-700">
-                  <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${progressPct}%` }} />
-                </div>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {!isPlaying ? (
+                  <button onClick={startDemo} className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium hover:bg-indigo-400">▶ Listen first</button>
+                ) : (
+                  <button onClick={stopDemo} className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium hover:bg-amber-400">⏸ Pause</button>
+                )}
+                <button onClick={restart} className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-600">↺ Restart</button>
+                <span data-testid="score" className="ml-1 text-xs text-slate-400">Note {Math.min(step + 1, lessonMidis.length)} of {lessonMidis.length} · Score {score}</span>
+              </div>
+              <div className="mx-auto mt-3 h-2.5 w-full max-w-md overflow-hidden rounded-full bg-slate-700">
+                <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${progressPct}%` }} />
+              </div>
+            </>
+          ) : null}
+
+          {completed ? (
+            <div data-testid="lesson-complete" className="rounded-2xl bg-slate-900 py-6 text-center">
+              <p className="text-4xl">🎉</p>
+              <p className="mt-2 text-2xl font-bold text-emerald-400">Lesson Complete!</p>
+              <p className="mt-1 text-3xl tracking-widest">{"⭐".repeat(stars)}<span className="opacity-20">{"⭐".repeat(3 - stars)}</span></p>
+              <div className="mt-3 flex items-center justify-center gap-6 text-sm">
+                <span>Accuracy <b data-testid="accuracy" className="text-lg text-emerald-400">{accuracy}%</b></span>
+                <span>Notes <b className="text-lg">{lessonMidis.length}</b></span>
+                <span>Score <b className="text-lg">{score}</b></span>
+              </div>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                <button onClick={restart} className="rounded-lg bg-emerald-500 px-5 py-2.5 font-semibold text-white hover:bg-emerald-400">↺ Practice Again</button>
+                {nextLesson ? (
+                  <button onClick={() => selectLesson(nextLesson.id)} className="rounded-lg bg-indigo-500 px-5 py-2.5 font-semibold text-white hover:bg-indigo-400">Next Lesson: {nextLesson.name} →</button>
+                ) : (
+                  <button onClick={() => { stopDemo(); setLessonId(null); setMessage("You finished every lesson — amazing! 🎶"); }} className="rounded-lg bg-slate-700 px-5 py-2.5 font-semibold hover:bg-slate-600">Free Play</button>
+                )}
               </div>
             </div>
           ) : null}
-          <p className="mt-3 text-center text-sm text-slate-300">{message}</p>
+
+          {!completed ? <p className="mt-3 text-center text-sm text-slate-300">{message}</p> : null}
         </section>
 
         {/* Controls */}
