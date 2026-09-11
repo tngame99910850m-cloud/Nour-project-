@@ -1,16 +1,12 @@
 "use client";
 
-import Link from "next/link";
-
 export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-canvas px-6 text-center">
-      <h1 className="font-serif text-3xl font-semibold">Something went wrong</h1>
-      <p className="mt-2 text-muted">An unexpected error occurred. Please try again.</p>
-      <div className="mt-8 flex gap-3">
-        <button onClick={reset} className="btn-primary btn-md">Try again</button>
-        <Link href="/" className="btn-outline btn-md">Go Home</Link>
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 px-6 text-center text-slate-100">
+      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <button onClick={reset} className="mt-6 rounded-lg bg-indigo-500 px-5 py-2.5 font-medium hover:bg-indigo-400">
+        Try again
+      </button>
     </div>
   );
 }
